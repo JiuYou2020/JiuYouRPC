@@ -4,7 +4,6 @@ import cn.jiuyou.impl.netty.NettyClient;
 import cn.jiuyou.serializer.SerializerManager;
 import cn.jiuyou.serializer.impl.KryoSerializer;
 import cn.jiuyou.serviceDiscovery.impl.ZookeeperServiceDiscovery;
-import cn.jiuyou.serviceDiscovery.strategies.RoundRobinStrategy;
 import cn.jiuyou.serviceDiscovery.strategies.WeightedRoundRobinStrategy;
 import org.junit.Test;
 

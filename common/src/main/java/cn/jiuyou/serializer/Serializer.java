@@ -25,7 +25,7 @@ public interface Serializer {
 
     /**
      * 获取实现类的TypeCode
+     * @return 实现类的TypeCode
      */
-
     int getTypeCode();
 }

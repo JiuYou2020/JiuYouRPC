@@ -15,6 +15,7 @@ public interface Client {
      *
      * @param rpcRequest rpc请求
      * @return rpc响应
+     * @throws Exception 异常
      */
     RpcResponse call(RpcRequest rpcRequest) throws Exception;
 }
