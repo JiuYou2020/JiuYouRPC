@@ -14,11 +14,12 @@ import org.junit.Test;
  */
 public class ServerTest {
     @Test
-    public void testServer() {
+    public void testServer() throws Exception {
 //        CompressionManager.setCompressionImpl(new GzipCompression());
         SerializerManager.setCompressionImpl(new KryoSerializer());
         ServiceProvider serviceProvider = new ServiceProvider();
-        serviceProvider.addService(new UserServiceImpl());
+        serviceProvider.addService(new UserServiceImpl(), 500);
+        serviceProvider.addService(new UserServiceImpl(), 100);
         serviceProvider.addService(new AccountServiceImpl());
         Server server = new NettyServer(serviceProvider);
         server.run();

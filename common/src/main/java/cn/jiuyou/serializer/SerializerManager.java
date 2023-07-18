@@ -1,12 +1,13 @@
 package cn.jiuyou.serializer;
 
 
-import cn.jiuyou.compression.CompressionManager;
 import cn.jiuyou.constant.SerializerType;
 import cn.jiuyou.serializer.impl.KryoSerializer;
 import cn.jiuyou.serializer.impl.ObjectSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static cn.jiuyou.constant.Constants.SERIALIZER_IMPL;
 
 /**
  * {@code @Author: } JiuYou
@@ -56,15 +57,14 @@ public class SerializerManager {
         if (serializerImpl != null) {
             return;
         }
-        String impl = CompressionManager.properties.getProperty("serializeImpl");
-        if (impl == null) {
+        if (SERIALIZER_IMPL == null) {
             serializerImpl = new KryoSerializer();
             return;
         }
-        log.info("===== {} be used from config.properties =====", impl);
-        if (SerializerType.OBJECT_SERIALIZER.toString().equals(impl)) {
+        log.info("===== {} be used from config.properties =====", SERIALIZER_IMPL);
+        if (SerializerType.OBJECT_SERIALIZER.toString().equals(SERIALIZER_IMPL)) {
             serializerImpl = new ObjectSerializer();
-        } else if (SerializerType.KRYO_SERIALIZER.toString().equals(impl)) {
+        } else if (SerializerType.KRYO_SERIALIZER.toString().equals(SERIALIZER_IMPL)) {
             serializerImpl = new KryoSerializer();
         } else {
             log.error("序列化方式填写错误");

@@ -7,8 +7,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
+
+import static cn.jiuyou.constant.Constants.COMPRESSION_IMPL;
 
 /**
  * {@code @Author: } JiuYou
@@ -17,27 +17,10 @@ import java.util.Properties;
  */
 public class CompressionManager {
     public static final Logger log = LoggerFactory.getLogger(CompressionManager.class);
-    public static Properties properties;
     private static volatile CompressionManager instance;
     private static Compression compressionImpl;
 
-    /*
-      在类加载时读取配置文件
-     */
-    static {
-        properties = new Properties();
-        try (InputStream inputStream = CompressionManager.class.getClassLoader().getResourceAsStream("config.properties")) {
-            if (inputStream != null) {
-                properties.load(inputStream);
-                log.info("===== config.properties loaded =====");
-            } else {
-                log.error("config.properties file not found.");
-            }
-        } catch (IOException e) {
-            log.error(e.getMessage());
-        }
 
-    }
 
 
     public static CompressionManager getInstance() {
@@ -83,20 +66,19 @@ public class CompressionManager {
         if (compressionImpl != null) {
             return;
         }
-        String impl = properties.getProperty("compressionImpl");
-        if (impl == null) {
+        if (COMPRESSION_IMPL == null) {
             return;
         }
-        if (CompressionType.DEFLATE.toString().equals(impl)) {
+        if (CompressionType.DEFLATE.toString().equals(COMPRESSION_IMPL)) {
             compressionImpl = new DeflateCompression();
-        } else if (CompressionType.GZIP.toString().equals(impl)) {
+        } else if (CompressionType.GZIP.toString().equals(COMPRESSION_IMPL)) {
             compressionImpl = new GzipCompression();
-        } else if (CompressionType.NONE.toString().equals(impl)) {
+        } else if (CompressionType.NONE.toString().equals(COMPRESSION_IMPL)) {
             compressionImpl = null;
         } else {
             log.error("解压方式填写错误");
         }
-        log.info("===== {} be used from config.properties =====", impl);
+        log.info("===== {} be used from config.properties =====", COMPRESSION_IMPL);
     }
 
     public byte getTypeCode() {

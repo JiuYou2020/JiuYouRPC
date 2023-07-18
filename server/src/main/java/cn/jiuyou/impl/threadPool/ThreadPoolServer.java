@@ -25,7 +25,7 @@ import static cn.jiuyou.constant.Constants.PORT;
 /**
  * {@code @Author: } JiuYou
  * {@code @Date: } 2023/06/24 21:30
- * {@code @Description: } Server的线程池实现
+ * {@code @Description: } Server的线程池实现,没有提供服务注册功能
  */
 @Slf4j
 public class ThreadPoolServer implements Server {
@@ -53,7 +53,7 @@ public class ThreadPoolServer implements Server {
     );
     private ServiceProvider serviceProvider;
 
-    public void run() {
+    public void run() throws Exception {
         //初始化ServiceProvider
         serviceProvider = new ServiceProvider();
         serviceProvider.addService(new UserServiceImpl());

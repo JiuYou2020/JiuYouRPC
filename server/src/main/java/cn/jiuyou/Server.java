@@ -9,7 +9,7 @@ public interface Server {
     /**
      * 开启服务
      */
-    void run();
+    void run() throws Exception;
 
     /**
      * 停止服务

@@ -22,11 +22,11 @@ import static cn.jiuyou.constant.Constants.PORT;
 /**
  * {@code @Author: } JiuYou
  * {@code @Date: } 2023/06/25 01:41
- * {@code @Description: } Server的简单实现，BIO同步阻塞式IO
+ * {@code @Description: } Server的简单实现，BIO同步阻塞式IO，没有提供服务注册功能
  */
 @Slf4j
 public class SimpleServer implements Server {
-    public void run() {
+    public void run() throws Exception {
         //初始化ServiceProvider
         ServiceProvider serviceProvider = new ServiceProvider();
         serviceProvider.addService(new UserServiceImpl());
