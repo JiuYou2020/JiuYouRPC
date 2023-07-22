@@ -40,23 +40,4 @@ public class ClientTest {
         Server server = new NettyServer(serviceProvider);
         server.run();
     }
-
-    @Test
-    public void testHttp2Client() {
-        ZookeeperServiceDiscovery.setProviderStrategy(new WeightedRoundRobinStrategy());
-        SerializerManager.setCompressionImpl(new KryoSerializer());
-        UserService userServiceProxy = ClientProxy.getProxy(UserService.class, new JiuYouHttp2Client());
-        Object user = userServiceProxy.getUserById("123");
-        System.out.println(user);
-    }
-
-    @Test
-    public void testHttp2Server() throws Exception {
-//        CompressionManager.setCompressionImpl(new GzipCompression());
-        SerializerManager.setCompressionImpl(new KryoSerializer());
-        ServiceProvider serviceProvider = new ServiceProvider();
-        serviceProvider.addService(new UserServiceImpl(), 500);
-        Server server = new JiuYouHttp2Server(serviceProvider);
-        server.run();
-    }
 }
