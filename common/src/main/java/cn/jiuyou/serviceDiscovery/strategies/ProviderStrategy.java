@@ -1,4 +1,4 @@
-package cn.jiuyou.serviceDiscovery;
+package cn.jiuyou.serviceDiscovery.strategies;
 
 import cn.jiuyou.constant.Payload;
 import org.apache.curator.x.discovery.ServiceInstance;

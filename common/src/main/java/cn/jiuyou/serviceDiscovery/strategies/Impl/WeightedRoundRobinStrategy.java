@@ -1,7 +1,7 @@
-package cn.jiuyou.serviceDiscovery.strategies;
+package cn.jiuyou.serviceDiscovery.strategies.Impl;
 
 import cn.jiuyou.constant.Payload;
-import cn.jiuyou.serviceDiscovery.ProviderStrategy;
+import cn.jiuyou.serviceDiscovery.strategies.ProviderStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.x.discovery.ServiceInstance;
 

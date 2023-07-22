@@ -2,8 +2,8 @@ package cn.jiuyou.serviceDiscovery.impl;
 
 import cn.jiuyou.constant.Payload;
 import cn.jiuyou.serviceDiscovery.Discovery;
-import cn.jiuyou.serviceDiscovery.ProviderStrategy;
-import cn.jiuyou.serviceDiscovery.strategies.RandomStrategy;
+import cn.jiuyou.serviceDiscovery.strategies.ProviderStrategy;
+import cn.jiuyou.serviceDiscovery.strategies.Impl.RandomStrategy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;

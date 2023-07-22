@@ -20,7 +20,7 @@ import static cn.jiuyou.constant.Constants.MAGIC_NUMBER;
  * 需要持有一个serialize器，负责将传入的对象序列化成字节数组
  */
 @Slf4j
-public class MyEncoder extends MessageToByteEncoder {
+public class MyEncoder extends MessageToByteEncoder<Object> {
     CompressionManager compressionManager = CompressionManager.getInstance();
     SerializerManager serializerManager = SerializerManager.getInstance();
 
@@ -36,7 +36,7 @@ public class MyEncoder extends MessageToByteEncoder {
         } else if (obj instanceof RpcResponse) {
             byteBuf.writeInt(MessageType.RPC_RESPONSE.getCode());
         } else {
-            System.out.println("暂未实现");
+            System.out.println("encode暂未实现");
         }
         //写入序列化方式
         byteBuf.writeInt(serializerManager.getTypeCode());

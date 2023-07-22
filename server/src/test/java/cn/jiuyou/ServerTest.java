@@ -2,7 +2,7 @@ package cn.jiuyou;
 
 import cn.jiuyou.impl.AccountServiceImpl;
 import cn.jiuyou.impl.UserServiceImpl;
-import cn.jiuyou.impl.netty.NettyServer;
+import cn.jiuyou.netty.NettyServer;
 import cn.jiuyou.serializer.SerializerManager;
 import cn.jiuyou.serializer.impl.KryoSerializer;
 import org.junit.Test;

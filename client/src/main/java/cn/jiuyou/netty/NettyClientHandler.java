@@ -1,4 +1,4 @@
-package cn.jiuyou.impl.netty;
+package cn.jiuyou.netty;
 
 import cn.jiuyou.entity.RpcResponse;
 import io.netty.channel.ChannelHandlerContext;

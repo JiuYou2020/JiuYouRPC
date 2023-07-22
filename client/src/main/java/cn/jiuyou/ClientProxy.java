@@ -3,7 +3,7 @@ package cn.jiuyou;
 
 import cn.jiuyou.entity.RpcRequest;
 import cn.jiuyou.entity.RpcResponse;
-import cn.jiuyou.impl.netty.NettyClient;
+import cn.jiuyou.netty.NettyClient;
 import lombok.AllArgsConstructor;
 
 import java.lang.reflect.InvocationHandler;
@@ -13,7 +13,7 @@ import java.lang.reflect.Proxy;
 /**
  * {@code @Author: } JiuYou
  * {@code @Date: } 2023/06/25 00:32
- * {@code @Description: }
+ * {@code @Description: } 使用jdk动态代理，实现客户端的远程调用
  */
 @AllArgsConstructor
 @SuppressWarnings("all")

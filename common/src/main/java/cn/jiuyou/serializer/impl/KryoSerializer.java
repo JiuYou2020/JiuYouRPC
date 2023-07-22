@@ -69,7 +69,7 @@ public class KryoSerializer implements Serializer {
                     obj = kryo.readObject(input, RpcResponse.class);
                     break;
                 default:
-                    System.out.println("暂未实现");
+                    System.out.println("serializer暂未实现");
             }
         }
         kryoThreadLocal.remove();
