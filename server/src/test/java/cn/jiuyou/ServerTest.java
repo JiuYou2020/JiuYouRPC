@@ -1,5 +1,6 @@
 package cn.jiuyou;
 
+import cn.jiuyou.http2.JiuYouHttp2Server;
 import cn.jiuyou.impl.AccountServiceImpl;
 import cn.jiuyou.impl.UserServiceImpl;
 import cn.jiuyou.netty.NettyServer;
@@ -22,6 +23,16 @@ public class ServerTest {
         serviceProvider.addService(new UserServiceImpl(), 100);
         serviceProvider.addService(new AccountServiceImpl());
         Server server = new NettyServer(serviceProvider);
+        server.run();
+    }
+
+    @Test
+    public void testHttp2Server() throws Exception {
+        ServiceProvider serviceProvider = new ServiceProvider();
+        serviceProvider.addService(new UserServiceImpl(), 500);
+        serviceProvider.addService(new UserServiceImpl(), 100);
+        serviceProvider.addService(new AccountServiceImpl());
+        Server server = new JiuYouHttp2Server();
         server.run();
     }
 }

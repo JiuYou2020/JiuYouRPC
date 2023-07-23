@@ -1,13 +1,11 @@
 package cn.jiuyou.http2;
 
 import cn.jiuyou.Client;
-import cn.jiuyou.ClientProxy;
-import cn.jiuyou.UserService;
 import cn.jiuyou.constant.Payload;
 import cn.jiuyou.entity.RpcRequest;
 import cn.jiuyou.entity.RpcResponse;
 import cn.jiuyou.serviceDiscovery.impl.ZookeeperServiceDiscovery;
-import cn.jiuyou.serviceDiscovery.strategies.Impl.WeightedRoundRobinStrategy;
+import cn.jiuyou.utils.Http2Util;
 import com.alibaba.fastjson2.JSON;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;

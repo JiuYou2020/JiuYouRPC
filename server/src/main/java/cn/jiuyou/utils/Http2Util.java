@@ -1,10 +1,13 @@
-package cn.jiuyou.http2;
+package cn.jiuyou.utils;
 
+
+import cn.jiuyou.http2.Http2ServerResponseHandler;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelPipeline;
 import io.netty.handler.codec.http.*;
-import io.netty.handler.codec.http2.*;
+import io.netty.handler.codec.http2.Http2FrameCodecBuilder;
+import io.netty.handler.codec.http2.Http2SecurityUtil;
+import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.ssl.*;
 import io.netty.handler.ssl.ApplicationProtocolConfig.Protocol;
 import io.netty.handler.ssl.ApplicationProtocolConfig.SelectedListenerFailureBehavior;
@@ -15,8 +18,6 @@ import io.netty.util.CharsetUtil;
 
 import javax.net.ssl.SSLException;
 import java.security.cert.CertificateException;
-
-import static io.netty.handler.logging.LogLevel.INFO;
 
 public class Http2Util {
     public static SslContext createSSLContext(boolean isServer) throws SSLException, CertificateException {
@@ -72,45 +73,6 @@ public class Http2Util {
             }
         };
         return serverAPNHandler;
-    }
-
-
-    public static ApplicationProtocolNegotiationHandler getClientAPNHandler(int maxContentLength, Http2SettingsHandler settingsHandler, Http2ClientResponseHandler responseHandler) {
-        // 创建一个HTTP/2帧日志记录器
-        final Http2FrameLogger logger = new Http2FrameLogger(INFO, Http2Util.class);
-
-        // 创建一个HTTP/2连接实例
-        final Http2Connection connection = new DefaultHttp2Connection(false);
-
-        // 创建一个HttpToHttp2ConnectionHandler，用于将HTTP/1.x请求转换为HTTP/2请求
-        HttpToHttp2ConnectionHandler connectionHandler = new HttpToHttp2ConnectionHandlerBuilder()
-                .frameListener(new DelegatingDecompressorFrameListener(connection, new InboundHttp2ToHttpAdapterBuilder(connection).maxContentLength(maxContentLength)
-                        .propagateSettings(true)
-                        .build()))
-                .frameLogger(logger)
-                .connection(connection)
-                .build();
-
-        // 创建一个应用层协议协商处理器，用于处理HTTP/2协议
-        ApplicationProtocolNegotiationHandler clientAPNHandler = new ApplicationProtocolNegotiationHandler(ApplicationProtocolNames.HTTP_2) {
-            @Override
-            // 在协议协商成功后，根据协议类型进行相应的通道处理配置
-            protected void configurePipeline(ChannelHandlerContext ctx, String protocol) {
-                // 如果协议为HTTP/2
-                if (ApplicationProtocolNames.HTTP_2.equals(protocol)) {
-                    ChannelPipeline p = ctx.pipeline();
-                    // 在通道处理流水线中依次添加HTTP/2连接处理器、自定义的HTTP/2设置处理器和HTTP/2客户端响应处理器
-                    p.addLast(connectionHandler);
-                    p.addLast(settingsHandler, responseHandler);
-                    return;
-                }
-                // 如果协议不为HTTP/2，关闭通道并抛出异常，因为此处理器仅支持HTTP/2协议
-                ctx.close();
-                throw new IllegalStateException("Protocol: " + protocol + " not supported");
-            }
-        };
-
-        return clientAPNHandler;
     }
 
 

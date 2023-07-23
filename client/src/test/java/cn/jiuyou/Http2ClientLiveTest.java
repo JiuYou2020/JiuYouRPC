@@ -5,7 +5,7 @@ import cn.jiuyou.entity.RpcResponse;
 import cn.jiuyou.http2.Http2ClientInitializer;
 import cn.jiuyou.http2.Http2ClientResponseHandler;
 import cn.jiuyou.http2.Http2SettingsHandler;
-import cn.jiuyou.http2.Http2Util;
+import cn.jiuyou.utils.Http2Util;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
