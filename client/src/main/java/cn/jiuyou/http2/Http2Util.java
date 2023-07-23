@@ -11,6 +11,7 @@ import io.netty.handler.ssl.ApplicationProtocolConfig.SelectedListenerFailureBeh
 import io.netty.handler.ssl.ApplicationProtocolConfig.SelectorFailureBehavior;
 import io.netty.handler.ssl.util.InsecureTrustManagerFactory;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
+import io.netty.util.CharsetUtil;
 
 import javax.net.ssl.SSLException;
 import java.security.cert.CertificateException;
@@ -118,9 +119,21 @@ public class Http2Util {
         FullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.valueOf("HTTP/2.0"), HttpMethod.GET, "/", Unpooled.EMPTY_BUFFER);
 
         // 设置请求头信息
+        return setRequestHeader(host, port, request);
+    }
+
+    public static FullHttpRequest createPostRequest(String host, int port, String requestJson) {
+        // 创建一个HTTP/2.0版本的POST请求，默认路径为"/"，空缓冲体
+        FullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.valueOf("HTTP/2.0"), HttpMethod.POST, "/", Unpooled.copiedBuffer(requestJson, CharsetUtil.UTF_8));
+
+        // 设置请求头信息
+        return setRequestHeader(host, port, request);
+    }
+
+    private static FullHttpRequest setRequestHeader(String host, int port, FullHttpRequest request) {
         request.headers()
                 // 添加主机名和端口号到HOST请求头中
-                .add(HttpHeaderNames.HOST, new String(host + ":" + port));
+                .add(HttpHeaderNames.HOST, host + ":" + port);
         request.headers()
                 // 指定请求使用HTTPS协议
                 .add(HttpConversionUtil.ExtensionHeaderNames.SCHEME.text(), HttpScheme.HTTPS);
@@ -132,5 +145,6 @@ public class Http2Util {
                 .add(HttpHeaderNames.ACCEPT_ENCODING, HttpHeaderValues.DEFLATE);
         return request;
     }
+
 
 }

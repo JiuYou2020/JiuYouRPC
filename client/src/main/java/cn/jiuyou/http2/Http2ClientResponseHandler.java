@@ -1,5 +1,8 @@
 package cn.jiuyou.http2;
 
+import cn.jiuyou.entity.RpcResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -31,13 +34,13 @@ public class Http2ClientResponseHandler extends SimpleChannelInboundHandler<Full
     }
 
     // 等待所有HTTP/2请求的响应
-    public String awaitResponses(long timeout, TimeUnit unit) {
+    public RpcResponse awaitResponses(long timeout, TimeUnit unit) {
 
         // 获取HTTP/2请求和响应的映射迭代器
         Iterator<Entry<Integer, MapValues>> itr = streamidMap.entrySet().iterator();
 
         // 初始化响应字符串为null
-        String response = null;
+        RpcResponse response = null;
 
         while (itr.hasNext()) {
             Entry<Integer, MapValues> entry = itr.next();
@@ -74,7 +77,7 @@ public class Http2ClientResponseHandler extends SimpleChannelInboundHandler<Full
 
     // 处理HTTP/2服务器端的响应
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, FullHttpResponse msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, FullHttpResponse msg) {
         // 获取响应的streamId
         Integer streamId = msg.headers().getInt(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text());
 
@@ -95,12 +98,15 @@ public class Http2ClientResponseHandler extends SimpleChannelInboundHandler<Full
             // 从响应消息中获取响应内容，并保存到value对象中
             ByteBuf content = msg.content();
             if (content.isReadable()) {
-                int contentLength = content.readableBytes();
-                byte[] arr = new byte[contentLength];
-                content.readBytes(arr);
-                String response = new String(arr, 0, contentLength, CharsetUtil.UTF_8);
-                logger.info("Response from Server: " + (response));
-                value.setResponse(response);
+                try {
+                    String requestBody = content.toString(CharsetUtil.UTF_8);
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    RpcResponse response = objectMapper.readValue(requestBody, RpcResponse.class);
+                    logger.info("Response from Server: " + (response));
+                    value.setResponse(response);
+                } catch (JsonProcessingException e) {
+                    throw new RuntimeException(e);
+                }
             }
 
             // 设置响应Promise为成功状态
@@ -112,13 +118,13 @@ public class Http2ClientResponseHandler extends SimpleChannelInboundHandler<Full
     public static class MapValues {
         ChannelFuture writeFuture;
         ChannelPromise promise;
-        String response;
+        RpcResponse response;
 
-        public String getResponse() {
+        public RpcResponse getResponse() {
             return response;
         }
 
-        public void setResponse(String response) {
+        public void setResponse(RpcResponse response) {
             this.response = response;
         }
 

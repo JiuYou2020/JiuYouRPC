@@ -44,12 +44,12 @@ public class NettyRpcServerHandler extends SimpleChannelInboundHandler<RpcReques
         // 得到服务名
         String interfaceName = request.getInterfaceName();
         //增加连接数
-        ServiceInstance<Payload> serviceInstance = serviceProvider.getServiceInstance(interfaceName);
+        ServiceInstance<Payload> serviceInstance = ServiceProvider.getServiceInstance(interfaceName);
         serviceInstance.getPayload().incrementActiveCount();
         discovery.updateService(serviceInstance);
         log.info("服务实例:{}  活跃数+1 ，当前活跃数:{}", serviceInstance, serviceInstance.getPayload().getActiveCount());
         // 得到服务端相应服务实现类
-        Object service = serviceProvider.getService(interfaceName);
+        Object service = ServiceProvider.getService(interfaceName);
         // 反射调用方法
         Method method;
         try {

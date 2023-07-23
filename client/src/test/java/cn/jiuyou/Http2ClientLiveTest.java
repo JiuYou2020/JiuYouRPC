@@ -1,6 +1,7 @@
 package cn.jiuyou;
 
 
+import cn.jiuyou.entity.RpcResponse;
 import cn.jiuyou.http2.Http2ClientInitializer;
 import cn.jiuyou.http2.Http2ClientResponseHandler;
 import cn.jiuyou.http2.Http2SettingsHandler;
@@ -79,7 +80,7 @@ public class Http2ClientLiveTest {
             responseHandler.put(streamId, channel.write(request), channel.newPromise());
             channel.flush();
             // 等待HTTP/2响应并获取结果
-            String response = responseHandler.awaitResponses(60, TimeUnit.SECONDS);
+            RpcResponse response = responseHandler.awaitResponses(60, TimeUnit.SECONDS);
             logger.info("response: " + response);
 
             // 断言检查响应内容是否为"Hello World"

@@ -35,7 +35,7 @@ public class NettyServer implements Server {
     public void run() throws Exception {
         // 注册服务
         ZookeeperServiceDiscovery discovery = ZookeeperServiceDiscovery.getInstance();
-        ArrayList<ServiceInstance<Payload>> serviceInstances = serviceProvider.getServiceInstances();
+        ArrayList<ServiceInstance<Payload>> serviceInstances = ServiceProvider.getServiceInstances();
         for (ServiceInstance<Payload> serviceInstance : serviceInstances) {
             discovery.registerService(serviceInstance);
             log.info("注册服务成功: {} 权重为:{}", serviceInstance, serviceInstance.getPayload().getWeight());
