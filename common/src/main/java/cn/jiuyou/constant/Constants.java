@@ -8,11 +8,8 @@ import cn.jiuyou.config.PropertiesLoader;
  * {@code @Description: }
  */
 public class Constants {
-    public static final int MAGIC_NUMBER;
     public static final String HOST;
     public static final int PORT;
-
-    public static final String COMPRESSION_IMPL;
     public static final String SERIALIZER_IMPL;
     public static final String BASE_PATH;
     public static final int CONNECTION_TIMEOUT_MS;
@@ -21,10 +18,8 @@ public class Constants {
 
     static {
         try {
-            MAGIC_NUMBER = 323;
             HOST = PropertiesLoader.properties.getProperty("host");
             PORT = Integer.parseInt(PropertiesLoader.properties.getProperty("port"));
-            COMPRESSION_IMPL = PropertiesLoader.properties.getProperty("compressionImpl");
             SERIALIZER_IMPL = PropertiesLoader.properties.getProperty("serializeImpl");
             BASE_PATH = PropertiesLoader.properties.getProperty("basePath");
             CONNECTION_TIMEOUT_MS = Integer.parseInt(PropertiesLoader.properties.getProperty("connectionTimeoutMs"));

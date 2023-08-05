@@ -22,10 +22,4 @@ public interface Serializer {
      * @return 反序列化后的对象
      */
     Object deserialize(byte[] bytes, int messageTypeCode);
-
-    /**
-     * 获取实现类的TypeCode
-     * @return 实现类的TypeCode
-     */
-    int getTypeCode();
 }

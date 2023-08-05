@@ -1,11 +1,12 @@
 package cn.jiuyou.http2;
 
+import cn.hutool.core.collection.ConcurrentHashSet;
 import cn.jiuyou.ServiceProvider;
 import cn.jiuyou.constant.Payload;
 import cn.jiuyou.entity.RpcRequest;
 import cn.jiuyou.entity.RpcResponse;
+import cn.jiuyou.serializer.SerializerManager;
 import cn.jiuyou.serviceDiscovery.impl.ZookeeperServiceDiscovery;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelDuplexHandler;
@@ -20,11 +21,16 @@ import org.apache.curator.x.discovery.ServiceInstance;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Set;
 
 @Sharable
 @Slf4j
 public class Http2ServerResponseHandler extends ChannelDuplexHandler {
     static final ByteBuf RESPONSE_BYTES = Unpooled.unreleasableBuffer(Unpooled.copiedBuffer("Hello World", CharsetUtil.UTF_8));
+    /**
+     * 用于存储全局唯一id的set
+     */
+    private static final Set<Long> REQUEST_IDS = new ConcurrentHashSet<>();
 
 
     @Override
@@ -64,9 +70,12 @@ public class Http2ServerResponseHandler extends ChannelDuplexHandler {
         } else if (msg instanceof DefaultHttp2DataFrame) {
             // 从数据帧读取数据
             DefaultHttp2DataFrame data = (DefaultHttp2DataFrame) msg;
-            String requestBody = data.content().toString(CharsetUtil.UTF_8);
-            ObjectMapper objectMapper = new ObjectMapper();
-            RpcRequest rpcRequest = objectMapper.readValue(requestBody, RpcRequest.class);
+            ByteBuf byteBuf = ((DefaultHttp2DataFrame) msg).content();
+            byte[] requestData = new byte[byteBuf.readableBytes()];
+            byteBuf.readBytes(requestData);
+            SerializerManager serializerManager = SerializerManager.getInstance();
+            Object deserialize = serializerManager.deserialize(requestData, 1);
+            RpcRequest rpcRequest = (RpcRequest) deserialize;
 
             // 获取之前存储的头帧信息
             Http2HeadersFrame msgHeader = (Http2HeadersFrame) ctx.channel().attr(AttributeKey.valueOf("msgHeader")).get();
@@ -75,21 +84,18 @@ public class Http2ServerResponseHandler extends ChannelDuplexHandler {
             boolean isEndFrame = data.isEndStream();
 
             RpcResponse response;
-            if (isEndFrame) {
-                // 如果是最后一帧，则处理完整的请求并获取响应
-                response = getResponse(rpcRequest);
+            // 保证幂等性
+            if (REQUEST_IDS.contains(rpcRequest.getRequestId())) {
+                response = new RpcResponse();
+                response.setCode(500);
+                response.setMessage("重复请求");
             } else {
-                //TODO 如果不是最后一帧，则继续处理请求的数据部分，这里可以根据业务逻辑进行相应处理
-//                response = processPartialRequestData(rpcRequest);
-                response = null;
+                response = getResponse(rpcRequest);
             }
-
-            // 将响应对象转换为JSON格式
-            String responseJson = objectMapper.writeValueAsString(response);
-
             // 创建一个ByteBuf用于存放响应内容
             ByteBuf content = ctx.alloc().buffer();
-            content.writeBytes(responseJson.getBytes());
+            byte[] resp = serializerManager.serialize(response);
+            content.writeBytes(resp);
 
             // 创建HTTP/2头部（Headers）对象，设置响应状态为200 OK
             Http2Headers headers = new DefaultHttp2Headers().status(HttpResponseStatus.OK.codeAsText());

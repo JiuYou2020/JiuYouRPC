@@ -14,14 +14,14 @@ public class Http2SettingsHandler extends SimpleChannelInboundHandler<Http2Setti
         this.promise = promise;
     }
 
-    public void awaitSettings(long timeout, TimeUnit unit) throws Exception {
+    public void awaitSettings(long timeout, TimeUnit unit) {
         if (!promise.awaitUninterruptibly(timeout, unit)) {
             throw new IllegalStateException("Timed out waiting for settings");
         }
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext ctx, Http2Settings msg) throws Exception {
+    protected void channelRead0(ChannelHandlerContext ctx, Http2Settings msg) {
         promise.setSuccess();
 
         ctx.pipeline()

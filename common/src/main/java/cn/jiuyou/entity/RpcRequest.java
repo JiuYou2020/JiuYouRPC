@@ -33,4 +33,8 @@ public class RpcRequest implements Serializable {
      * 方法参数的类型
      */
     private Class<?>[] paramTypes;
+    /**
+     * 全局唯一id
+     */
+    private Long requestId;
 }

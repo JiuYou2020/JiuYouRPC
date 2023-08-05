@@ -1,10 +1,12 @@
 package cn.jiuyou.serializer.impl;
 
-import cn.jiuyou.constant.SerializerType;
 import cn.jiuyou.serializer.Serializer;
+import cn.jiuyou.serializer.SerializerManager;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
+
+import static cn.jiuyou.constant.SerializerType.OBJECT_SERIALIZER;
 
 /**
  * {@code @Author: } JiuYou
@@ -35,10 +37,5 @@ public class ObjectSerializer implements Serializer {
             e.printStackTrace();
             return null;
         }
-    }
-
-    @Override
-    public int getTypeCode() {
-        return SerializerType.OBJECT_SERIALIZER.getCode();
     }
 }

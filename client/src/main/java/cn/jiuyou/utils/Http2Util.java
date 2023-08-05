@@ -101,9 +101,9 @@ public class Http2Util {
         return setRequestHeader(host, port, request);
     }
 
-    public static FullHttpRequest createPostRequest(String host, int port, String requestJson) {
+    public static FullHttpRequest createPostRequest(String host, int port, byte[] requestJson) {
         // 创建一个HTTP/2.0版本的POST请求，默认路径为"/"，空缓冲体
-        FullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.valueOf("HTTP/2.0"), HttpMethod.POST, "/", Unpooled.copiedBuffer(requestJson, CharsetUtil.UTF_8));
+        FullHttpRequest request = new DefaultFullHttpRequest(HttpVersion.valueOf("HTTP/2.0"), HttpMethod.POST, "/", Unpooled.copiedBuffer(requestJson));
 
         // 设置请求头信息
         return setRequestHeader(host, port, request);

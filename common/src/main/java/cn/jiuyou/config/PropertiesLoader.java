@@ -1,6 +1,5 @@
 package cn.jiuyou.config;
 
-import cn.jiuyou.compression.CompressionManager;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -21,7 +20,7 @@ public class PropertiesLoader {
     */
     static {
         properties = new Properties();
-        try (InputStream inputStream = CompressionManager.class.getClassLoader().getResourceAsStream("config.properties")) {
+        try (InputStream inputStream = PropertiesLoader.class.getClassLoader().getResourceAsStream("config.properties")) {
             if (inputStream != null) {
                 properties.load(inputStream);
                 log.info("===== config.properties loaded =====");

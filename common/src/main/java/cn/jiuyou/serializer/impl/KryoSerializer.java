@@ -2,10 +2,10 @@ package cn.jiuyou.serializer.impl;
 
 
 import cn.jiuyou.constant.MessageType;
-import cn.jiuyou.constant.SerializerType;
 import cn.jiuyou.entity.RpcRequest;
 import cn.jiuyou.entity.RpcResponse;
 import cn.jiuyou.serializer.Serializer;
+import cn.jiuyou.serializer.SerializerManager;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
@@ -15,6 +15,8 @@ import org.objenesis.strategy.StdInstantiatorStrategy;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+
+import static cn.jiuyou.constant.SerializerType.KRYO_SERIALIZER;
 
 /**
  * {@code @Author: } JiuYou
@@ -75,10 +77,5 @@ public class KryoSerializer implements Serializer {
         kryoThreadLocal.remove();
         input.close();
         return obj;
-    }
-
-    @Override
-    public int getTypeCode() {
-        return SerializerType.KRYO_SERIALIZER.getCode();
     }
 }

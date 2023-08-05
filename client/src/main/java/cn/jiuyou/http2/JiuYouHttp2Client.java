@@ -4,9 +4,9 @@ import cn.jiuyou.Client;
 import cn.jiuyou.constant.Payload;
 import cn.jiuyou.entity.RpcRequest;
 import cn.jiuyou.entity.RpcResponse;
+import cn.jiuyou.serializer.SerializerManager;
 import cn.jiuyou.serviceDiscovery.impl.ZookeeperServiceDiscovery;
 import cn.jiuyou.utils.Http2Util;
-import com.alibaba.fastjson2.JSON;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
@@ -68,10 +68,12 @@ public class JiuYouHttp2Client implements Client {
             Http2SettingsHandler http2SettingsHandler = initializer.getSettingsHandler();
             http2SettingsHandler.awaitSettings(60, TimeUnit.SECONDS);
             logger.info("Sending request(s)...");
-            // 将RpcRequest对象序列化为JSON字符串
-            String requestJson = JSON.toJSONString(rpcRequest);
+
+            SerializerManager serializerManager = SerializerManager.getInstance();
+            byte[] req = serializerManager.serialize(rpcRequest);
+
             // 构建一个HTTP/2 POST请求
-            FullHttpRequest request = Http2Util.createPostRequest(address, port, requestJson);
+            FullHttpRequest request = Http2Util.createPostRequest(address, port, req);
             // 设置请求头，指定请求内容类型为application/json
             request.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/json");
             // 设置请求头，指定请求内容长度

@@ -39,7 +39,7 @@ public class SerializerManager {
      */
     public static void setCompressionImpl(Serializer serializer) {
         serializerImpl = serializer;
-        log.info("===== {} be used from set =====", serializer.getClass().toString());
+        log.info("===== {} be used from set =====", serializer.getClass());
     }
 
     public byte[] serialize(Object input) {
@@ -69,12 +69,5 @@ public class SerializerManager {
         } else {
             log.error("序列化方式填写错误");
         }
-    }
-
-    public int getTypeCode() {
-        if (serializerImpl == null) {
-            return SerializerType.NONE.getCode();
-        }
-        return serializerImpl.getTypeCode();
     }
 }

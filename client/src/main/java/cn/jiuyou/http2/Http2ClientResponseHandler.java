@@ -1,8 +1,7 @@
 package cn.jiuyou.http2;
 
 import cn.jiuyou.entity.RpcResponse;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import cn.jiuyou.serializer.SerializerManager;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
@@ -10,7 +9,6 @@ import io.netty.channel.ChannelPromise;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http2.HttpConversionUtil;
-import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,15 +96,12 @@ public class Http2ClientResponseHandler extends SimpleChannelInboundHandler<Full
             // 从响应消息中获取响应内容，并保存到value对象中
             ByteBuf content = msg.content();
             if (content.isReadable()) {
-                try {
-                    String requestBody = content.toString(CharsetUtil.UTF_8);
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    RpcResponse response = objectMapper.readValue(requestBody, RpcResponse.class);
-                    logger.info("Response from Server: " + (response));
-                    value.setResponse(response);
-                } catch (JsonProcessingException e) {
-                    throw new RuntimeException(e);
-                }
+                SerializerManager serializerManager = SerializerManager.getInstance();
+                byte[] bytes = new byte[content.readableBytes()];
+                content.readBytes(bytes);
+                RpcResponse response = (RpcResponse) serializerManager.deserialize(bytes, 2);
+                logger.info("Response from Server: " + (response));
+                value.setResponse(response);
             }
 
             // 设置响应Promise为成功状态

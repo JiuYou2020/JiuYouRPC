@@ -3,6 +3,7 @@ package cn.jiuyou;
 
 import cn.jiuyou.entity.RpcRequest;
 import cn.jiuyou.entity.RpcResponse;
+import cn.jiuyou.utils.IdGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.lang.reflect.InvocationHandler;
@@ -34,6 +35,8 @@ public class ClientProxy implements InvocationHandler {
                 .methodName(method.getName())
                 .params(args)
                 .paramTypes(method.getParameterTypes())
+                //生成全局唯一id
+                .requestId(IdGenerator.generateId())
                 .build();
         //发起远程调用
         RpcResponse rpcResponse = client.call(rpcRequest);
